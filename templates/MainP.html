@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CipherVault | Secure Password Suite</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Maincs.css') }}">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="container">
+            <div class="logo-wrapper">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" id="topLogo" style="height: 50px; width: auto;">
+                <span class="brand-name">CipherVault</span>
+            </div>
+            <nav class="nav-links">
+                <button class="btn-text btn-login">Login</button>
+                <button class="btn-outline">Sign Up</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="hero">
+        <div class="container">
+            <div class="hero-card">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="main-logo">
+            </div>
+
+            <div class="hero-content">
+                <p class="description">
+                    Empower your digital identity with advanced encryption.
+                    Generate unbreakable keys and verify your security posture in seconds.
+                </p>
+                <h2 class="tagline">More Security</h2>
+            </div>
+
+            <div class="action-group">
+                <a href="{{ url_for('generator_page') }}" class="btn-main"
+                    style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                    Generate Password
+                </a>
+
+                <a href="{{ url_for('strength_page') }}" class="btn-main"
+                    style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                    Check Strength
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 CipherVault Project. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

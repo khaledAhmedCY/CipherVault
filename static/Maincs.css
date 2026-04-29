@@ -1,0 +1,228 @@
+/* Variables for easy customization */
+:root {
+    --primary: lab(63.66% 54.87 42.25);       /* Muted Coral Action Color */
+    --primary-hover: #f65a41;
+    --bg-light: #282525c8;      /* Clean Off-white background */
+    --text-main: #2d3436;     /* Deep Grey for text */
+    --text-muted: #f65a41;    /* Muted Grey for descriptions */
+    --border-light: #e1e4e8;  /* Subtle border color */
+    --card-bg: #ffffff;
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* --- Header Section --- */
+.navbar {
+    background: var(--card-bg);
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-light);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-logo {
+    height: 38px;
+    width: auto;
+}
+
+.brand-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* Updated Nav Buttons */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-text {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: color 0.3s;
+}
+
+.btn-text:hover {
+    color: var(--primary);
+}
+
+.btn-outline {
+    padding: 8px 24px;
+    border: 1.5px solid var(--border-light);
+    background: transparent;
+    color: var(--text-main);
+    border-radius: 20px; /* Rounded and soft */
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background-color: rgba(255, 107, 82, 0.03);
+}
+
+/* --- Hero Section --- */
+.hero {
+    padding: 80px 0;
+    text-align: center;
+}
+
+.hero .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+.hero-card {
+    background: var(--card-bg);
+    padding: 45px;
+    border-radius: 28px;
+    box-shadow: var(--shadow-soft);
+    max-width: 420px;
+    width: 90%;
+}
+
+.main-logo {
+    width: 100%;
+    max-width: 260px;
+}
+
+.hero-content .description {
+    max-width: 600px;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.tagline {
+    font-size: 1.4rem;
+    color: var(--primary);
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+/* --- Primary Buttons --- */
+.action-group {
+    display: flex;
+    gap: 20px;
+}
+
+.btn-main {
+    padding: 16px 45px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(255, 107, 82, 0.15);
+    transition: all 0.2s ease;
+}
+
+.btn-main:hover {
+    transform: translateY(-2px);
+    background-color: var(--primary-hover);
+    box-shadow: 0 12px 25px rgba(255, 107, 82, 0.25);
+}
+
+/* --- Footer --- */
+.footer {
+    padding: 40px 0;
+    text-align: center;
+    color: #bdc3c7;
+    font-size: 0.85rem;
+}
+
+/* Responsive UI */
+@media (max-width: 600px) {
+    .action-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    .btn-main {
+        width: 100%;
+    }
+}
+
+/* تنسيق زرار الـ Login الأساسي */
+.btn-login {
+    padding: 8px 24px;
+    border: 1.5px solid var(--border-light);
+    background: transparent;
+    color: var(--text-main);
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* تأثير الـ Hover (لما الماوس ييجي عليه) */
+.btn-login:hover {
+    color: var(--primary); /* يغير لون الخط للبرتقالي */
+    background-color: rgba(255, 107, 82, 0.08); /* يضيف خلفية خفيفة جداً بتنور */
+}
+
+/* زرار الـ Sign Up المحدث عشان يكونوا متناسقين */
+.btn-outline {
+    padding: 8px 24px;
+    border: 1.5px solid var(--border-light);
+    background: transparent;
+    color: var(--text-main);
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background-color: rgba(255, 107, 82, 0.08); /* نفس تأثير التنوير */
+}

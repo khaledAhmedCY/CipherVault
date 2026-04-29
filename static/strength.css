@@ -1,0 +1,134 @@
+/* StrengthStyle.css */
+
+/* الإعدادات العامة */
+body {
+    background-color: #2d3436;
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+header {
+    width: 100%;
+    padding: 20px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 87, 51, 0.3);
+}
+
+header h1 {
+    margin: 0;
+    font-family: 'Black Han Sans', sans-serif;
+    color: #ff5733;
+}
+
+main {
+    width: 90%;
+    max-width: 500px;
+    margin-top: 50px;
+    text-align: center;
+}
+
+.section-title {
+    color: #ff5733;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.tip {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 30px;
+}
+
+/* حاوية الإدخال */
+.input-container {
+    background: #1e1e1e;
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 87, 51, 0.2);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.input-header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #eee;
+}
+
+/* تصميم صندوق الكتابة */
+#userPass {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    background: #121212;
+    border: 2px solid #333;
+    border-radius: 8px;
+    color: #ff5733;
+    font-size: 1.2rem;
+    text-align: center;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#userPass:focus {
+    border-color: #ff5733;
+    box-shadow: 0 0 10px rgba(255, 87, 51, 0.3);
+}
+
+/* منطقة عرض النتيجة */
+.box {
+    margin-top: 30px;
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.password-display {
+    background: #fff;
+    color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.check-btn {
+    width: 100%;
+    padding: 16px;
+    background: #f65a41; /* نفس لون زرار الجينيريتور */
+    border: 1px solid #f65a41;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px; /* عشان يبقى مدور من الحواف زي التاني */
+}
+
+.check-btn:hover {
+    background: #f65a41;
+    transform: scale(1.02);
+    box-shadow: 0 0 20px #f65a41;
+    letter-spacing: 3px; 
+}
+
+.check-btn:active {
+    transform: scale(0.98);
+}

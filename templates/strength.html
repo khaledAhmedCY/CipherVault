@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CipherVault | Strength Checker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='strength.css') }}">
+</head>
+<body>
+
+<header style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+    <h1>Password Strength</h1>
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" id="topLogo" style="height: 50px; width: auto;">
+    </div>
+</header>
+
+<main>
+    <h2 class="section-title" style="color: #ff5733;">Check Strength</h2>
+    <p class="tip"><strong>Tip:</strong> Strong passwords contain symbols and numbers.</p>
+
+    <div class="length-container">
+        <div class="length-header">
+            <span>Enter your password below</span>
+        </div>
+        <input type="text" id="userPass" placeholder="Type here..." 
+               style="width: 90%; padding: 15px; margin-top: 10px; background: #1a1a1a; border: 1px solid #ff5733; color: white; border-radius: 5px; text-align: center; font-size: 1.1rem;">
+    </div>
+
+    <div class="box">
+        <div class="password-display" id="resultLabel" style="color: #888;">
+            Results will appear here
+        </div>
+        <button class="check-btn" id="checkBtn">CHECK STRENGTH</button>
+    </div>
+</main>
+
+<script>
+    document.getElementById('checkBtn').onclick = function() {
+        const password = document.getElementById('userPass').value;
+        
+        if(!password) {
+            alert("Please enter a password!");
+            return;
+        }
+
+        fetch('/check_password', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ password: password })
+        })
+        .then(res => res.json())
+        .then(data => {
+            const label = document.getElementById('resultLabel');
+            label.innerText = data.strength;
+            
+            // تغيير اللون حسب القوة
+            if(data.strength === "Strong") label.style.color = "#4CAF50";
+            else if(data.strength === "Medium") label.style.color = "#FFC107";
+            else label.style.color = "#F44336";
+        });
+    }
+</script>
+</body>
+</html>

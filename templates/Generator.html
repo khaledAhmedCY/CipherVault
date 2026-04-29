@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='GenStyle.css') }}">
+</head>
+
+<body>
+
+<header style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+    <h1>Password Generator</h1>
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" id="topLogo" style="height: 50px; width: auto;">
+    </div>
+</header>
+
+<main>
+    <h2 class="section-title">Generate a Secure Password</h2>
+    <p class="tip">
+        <strong>Tip:</strong> Longer passwords are usually more secure
+    </p>
+
+    <!-- Length -->
+    <div class="length-container">
+        <div class="length-header">
+            <span>Password Length</span>
+            <span id="lengthValue">12</span>
+        </div>
+        <input type="range" id="passwordLength" min="8" max="32" value="12" class="slider">
+    </div>
+
+    <!-- Options -->
+    <div class="options">
+
+        <label>
+            <input type="checkbox" id="upper" checked>
+            <span>Uppercase (A-Z)</span>
+        </label>
+
+        <label>
+            <input type="checkbox" id="lower" checked>
+            <span>Lowercase (a-z)</span>
+        </label>
+
+        <label>
+            <input type="checkbox" id="digits" checked>
+            <span>Numbers (0-9)</span>
+        </label>
+
+        <label>
+            <input type="checkbox" id="symbols" checked>
+            <span>Symbols (!@#)</span>
+        </label>
+
+    </div>
+
+    <!-- Generate Box -->
+    <div class="box">
+        <div class="password-display" id="passDisplay">
+            Click Generate to get your password
+        </div>
+        <button class="generate-btn">Generate Password</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+        <span class="label">
+            <span id="charCount">0</span> characters containing:
+        </span>
+        <span class="stat-tag" id="statLower">Lower case</span>
+        <span class="stat-tag" id="statUpper">Upper case</span>
+        <span class="stat-tag" id="statDigits">Numbers</span>
+        <span class="stat-tag" id="statSymbols">Symbols</span>
+    </div>
+</main>
+
+<script>
+const genBtn = document.querySelector('.generate-btn');
+const slider = document.getElementById('passwordLength');
+const passDisplay = document.getElementById('passDisplay');
+const lengthValue = document.getElementById('lengthValue');
+
+// checkboxes
+const upper = document.getElementById('upper');
+const lower = document.getElementById('lower');
+const digits = document.getElementById('digits');
+const symbols = document.getElementById('symbols');
+
+// stats
+const statUpper = document.getElementById('statUpper');
+const statLower = document.getElementById('statLower');
+const statDigits = document.getElementById('statDigits');
+const statSymbols = document.getElementById('statSymbols');
+
+// تحديث طول الباسورد
+slider.oninput = function() {
+    lengthValue.innerText = this.value;
+}
+
+// تحديث الـ stats UI
+function updateStatsUI() {
+    statUpper.style.opacity = upper.checked ? "1" : "0.3";
+    statLower.style.opacity = lower.checked ? "1" : "0.3";
+    statDigits.style.opacity = digits.checked ? "1" : "0.3";
+    statSymbols.style.opacity = symbols.checked ? "1" : "0.3";
+}
+
+// تشغيل أولي
+updateStatsUI();
+
+// لما المستخدم يغير الاختيارات
+document.querySelectorAll('.options input').forEach(el => {
+    el.addEventListener('change', updateStatsUI);
+});
+
+// زرار Generate
+genBtn.onclick = function() {
+
+    // منع إن مفيش اختيار
+    if (!upper.checked && !lower.checked && !digits.checked && !symbols.checked) {
+        alert("Select at least one option!");
+        return;
+    }
+
+    fetch('/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            length: slider.value,
+            upper: upper.checked,
+            lower: lower.checked,
+            digits: digits.checked,
+            symbols: symbols.checked
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        passDisplay.innerText = data.password;
+        document.getElementById('charCount').innerText = slider.value;
+    });
+};
+</script>
+
+</body>
+</html>
