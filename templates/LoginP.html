@@ -3,9 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Login | CipherVault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='SignUp.css') }}">
+    <style>
+        /* Ensuring styles match your theme */
+        body { background-color: #2d3436; color: white; font-family: 'Inter', sans-serif; }
+        .login-container {
+            background-color: #3b4244;
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 400px;
+            margin: 100px auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .btn-login {
+            background-color: #f65a41;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            background: #2d3436;
+            border: 1px solid #4a5558;
+            color: white;
+            border-radius: 6px;
+        }
+    </style>
 </head>
 <body>
-    
+
+<div class="login-container">
+    <h2 style="text-align: center;">Welcome Back</h2>
+    <form action="{{ url_for('login') }}" method="POST">
+        <div class="input-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="name@example.com" required>
+        </div>
+
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn-login">Login</button>
+    </form>
+
+    <div class="footer-text" style="text-align: center; margin-top: 20px; font-size: 0.9rem;">
+        Don't have an account? <a href="{{ url_for('signup') }}" style="color: #f65a41; text-decoration: none;">Sign up here</a>
+    </div>
+</div>
+
 </body>
 </html>

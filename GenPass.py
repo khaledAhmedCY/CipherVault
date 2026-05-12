@@ -57,13 +57,35 @@ def generator_page():
 def strength_page(): 
     return render_template('strength.html')
 
-@app.route('/login')
-def login():  
+@app.route('/login', methods=['GET', 'POST']) # <--- Add this!
+def login():
+    if request.method == 'POST':
+        # This is where you'll eventually verify the email and password
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        print(f"Login attempt from: {email}")
+        
+        # After successful login, send them to the main page
+        return redirect(url_for('index'))
+    
+    # If it's a GET request, just show the login page
     return render_template('LoginP.html')
 
 
-@app.route('/signup')
-def signup():  
+from flask import Flask, render_template, request, redirect, url_for
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        print(f"New user registered: {username}") 
+
+        return redirect(url_for('login')) 
+    
     return render_template('SignUpP.html')
 
 # 3. إضافة Route لاستقبال كلمة المرور وفحصها باستخدام ملف check.py
