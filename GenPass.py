@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import random
 import string
-# 1. استدعاء الدالة من ملف check.py اللي عملته
+
 from check import check_strenght 
 
 app = Flask(__name__)
@@ -56,6 +56,15 @@ def generator_page():
 @app.route('/strength')
 def strength_page(): 
     return render_template('strength.html')
+
+@app.route('/login')
+def login():  
+    return render_template('LoginP.html')
+
+
+@app.route('/signup')
+def signup():  
+    return render_template('SignUpP.html')
 
 # 3. إضافة Route لاستقبال كلمة المرور وفحصها باستخدام ملف check.py
 @app.route('/check_password', methods=['POST'])
