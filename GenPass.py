@@ -1,11 +1,33 @@
 from flask import Flask, render_template, request, jsonify
 import random
 import string
+import os
+from flask import Flask, render_template, request, redirect, url_for, session
+from flask_sqlalchemy import SQLAlchemy
 
 from check import check_strenght 
 
 app = Flask(__name__)
+app.secret_key = 'cipher_vault_encryption_key'
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+
+with app.app_context():
+     db.create_all()
+
+
+       
+#the code for generate 
 def generate_pass(length, use_upper, use_lower, use_digits, use_symbols):
     if length < 8:
         return "Length should be at least 8"
@@ -52,24 +74,26 @@ def index():
 def generator_page():
     return render_template('Generator.html')
 
-# 2. إضافة Route لفتح صفحة فحص القوة (StrengthP.html)
 @app.route('/strength')
 def strength_page(): 
     return render_template('strength.html')
 
-@app.route('/login', methods=['GET', 'POST']) # <--- Add this!
+
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # This is where you'll eventually verify the email and password
         email = request.form.get('email')
         password = request.form.get('password')
         
-        print(f"Login attempt from: {email}")
+        user = User.query.filter_by(email=email).first()
         
-        # After successful login, send them to the main page
-        return redirect(url_for('index'))
-    
-    # If it's a GET request, just show the login page
+        if user and user.password == password:
+            session['user_name'] = user.username 
+            return redirect(url_for('index'))
+        else:
+            return "Error: Invalid Email or Password"
+            
     return render_template('LoginP.html')
 
 
@@ -78,23 +102,34 @@ from flask import Flask, render_template, request, redirect, url_for
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
+        # Collect data from form
+        user_name = request.form.get('username')
+        user_email = request.form.get('email')
+        user_pass = request.form.get('password')
 
-        print(f"New user registered: {username}") 
-
-        return redirect(url_for('login')) 
-    
+        # Save to database
+        new_user = User(username=user_name, email=user_email, password=user_pass)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('login'))
     return render_template('SignUpP.html')
 
-# 3. إضافة Route لاستقبال كلمة المرور وفحصها باستخدام ملف check.py
+
+@app.route('/logout')
+def logout():
+    session.pop('user_name', None) # <--- SESSION ENDS HERE
+    return redirect(url_for('index'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+
 @app.route('/check_password', methods=['POST'])
 def check_password():
     data = request.get_json()
     password = data.get('password', '')
     
-    # مناداة الدالة اللي جاية من ملف check.py
     result = check_strenght(password) 
     
     return jsonify({"strength": result})
