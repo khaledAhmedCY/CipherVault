@@ -186,6 +186,43 @@
             opacity: 1;
             visibility: visible;
         }
+
+        .back-to-mainPage {
+            margin: 0;
+            /* Remove top/bottom margin since header padding handles it */
+        }
+
+        /* The actual button style */
+        .back-to-mainPage .nav-link {
+            display: inline-block;
+            padding: 12px 30px;
+            /* Slightly larger button to match the bigger bar */
+            background-color: #f65a41;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            font-family: 'DM Sans', sans-serif;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+            /* Matches your "Generate" button style */
+            font-size: 0.9rem;
+        }
+
+        /* Hover effect to make it feel interactive */
+        .back-to-mainPage .nav-link:hover {
+            background-color: #e44d36;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(246, 90, 65, 0.4);
+            color: #ffffff;
+        }
+
+        /* Active effect when clicked */
+        .back-to-mainPage .nav-link:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 
@@ -263,15 +300,7 @@
 
             <div class="info-grid">
 
-                <div class="info-box">
-
-                    <h4>Last Password Change</h4>
-
-                    <p id="lastChanged">
-                        42 days ago
-                    </p>
-
-                </div>
+                
 
                 <div class="info-box">
 
@@ -320,6 +349,9 @@
                             <th style="padding:15px;">
                                 Security
                             </th>
+                            <th style="padding:15px;">
+                                Last Change
+                            </th>
 
                         </tr>
 
@@ -337,9 +369,6 @@
 
     </div>
     <script>
-        // ===================================
-        // 1. تعريف العناصر الأساسية (Elements)
-        // ===================================
         const platformSelect = document.getElementById("platformSelect");
         const logo = document.getElementById("platformLogo");
         const passwordInput = document.getElementById("passwordInput");
@@ -352,9 +381,8 @@
         const savedPasswordsSection = document.getElementById("savedPasswordsSection");
         const showPasswordsBtn = document.getElementById("showPasswordsBtn");
 
-        // ===================================
-        // 2. إدارة لوجوهات المنصات
-        // ===================================
+        let allSavedPasswords = []; // مخزن لتخزين الباسوردات من السيرفر للمقارنة
+
         const logos = {
             facebook: "https://cdn-icons-png.flaticon.com/512/124/124010.png",
             instagram: "https://cdn-icons-png.flaticon.com/512/2111/2111463.png",
@@ -369,157 +397,93 @@
             analyzePassword();
         });
 
-        passwordInput.addEventListener("input", analyzePassword);
+        // مراقبة الكتابة للـ Reuse Detection
+        passwordInput.addEventListener("input", function () {
+            analyzePassword();
+            checkReuse(this.value);
+        });
 
-        // ===================================
-        // 3. تحليل قوة الباسورد (Logic)
-        // ===================================
         function analyzePassword() {
             let password = passwordInput.value;
             let platform = platformSelect.value;
             let score = 0;
             let warnings = [];
 
-            // معايير القوة
             if (password.length >= 8) score++;
-            else warnings.push("Password is too short.");
-
             if (/[A-Z]/.test(password)) score++;
-            else warnings.push("Add uppercase letters.");
-
             if (/[a-z]/.test(password)) score++;
-            else warnings.push("Add lowercase letters.");
-
             if (/[0-9]/.test(password)) score++;
-            else warnings.push("Add numbers.");
-
             if (/[^A-Za-z0-9]/.test(password)) score++;
-            else warnings.push("Add special symbols.");
 
-            // مستويات الأمان المطلوبة لكل منصة
             let requiredSecurity = { facebook: 3, instagram: 3, discord: 3, gmail: 4, github: 4, banking: 5 };
-            let platformMessages = {
-                gmail: "Email accounts are high-risk targets.",
-                github: "GitHub accounts may contain sensitive code.",
-                banking: "Banking applications require maximum security.",
-                facebook: "Avoid using personal info.",
-                instagram: "Enable two-factor authentication.",
-                discord: "Gaming accounts are often targeted."
-            };
 
-            // تحديث واجهة المستخدم بناءً على النتيجة
             if (score < requiredSecurity[platform]) {
                 riskLevel.innerText = "Risk : High";
                 riskLevel.style.color = "red";
-                riskText.innerText = "This password is not secure enough for this platform.";
             } else if (score === requiredSecurity[platform]) {
                 riskLevel.innerText = "Risk : Medium";
                 riskLevel.style.color = "orange";
-                riskText.innerText = "Password security is acceptable but can be improved.";
             } else {
                 riskLevel.innerText = "Risk : Low";
                 riskLevel.style.color = "lightgreen";
-                riskText.innerText = "Excellent password security level.";
             }
+        }
 
-            warnings.push(platformMessages[platform]);
-            warningText.innerHTML = warnings.join("<br><br>");
-
-            // كشف الكلمات الشائعة
-            if (["123456", "password", "admin"].includes(password.toLowerCase())) {
-                reuseText.innerText = "This password is commonly used and unsafe.";
-            } else {
+        // فنكشن الـ Reuse Detection اللحظية
+        function checkReuse(currentPass) {
+            if (!currentPass) {
                 reuseText.innerText = "No reused passwords detected.";
-            }
-        }
-
-        // ===================================
-        // 4. الربط مع الباك إند (Flask API)
-        // ===================================
-
-        // حفظ الباسورد
-        saveBtn.addEventListener("click", function () {
-            const data = {
-                platform: platformSelect.value,
-                password: passwordInput.value,
-                strength: riskLevel.innerText
-            };
-
-            if (!data.password) {
-                alert("Please enter or generate a password first!");
+                reuseText.style.color = "white";
                 return;
             }
 
-            fetch('/save_password', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            })
+            // بنشوف هل الباسورد اللي بتكتبه موجود قبل كدة في الداتا اللي جات من السيرفر؟
+            const isReused = allSavedPasswords.some(item => item.password === currentPass);
+
+            if (isReused) {
+                reuseText.innerText = "Warning: This password is already used in another platform!";
+                reuseText.style.color = "#ff4d4d";
+            } else {
+                reuseText.innerText = "Safe: This is a unique password.";
+                reuseText.style.color = "lightgreen";
+            }
+        }
+
+        function fetchSavedPasswords() {
+            fetch('/get_passwords')
                 .then(response => response.json())
-                .then(result => {
-                    if (result.message) {
-                        alert(result.message);
-                        // تحديث الجدول تلقائياً إذا كان مفتوحاً
-                        if (savedPasswordsSection.style.display === "block") {
-                            fetchSavedPasswords();
-                        }
-                    } else {
-                        alert("Error: " + result.error);
+                .then(data => {
+                    allSavedPasswords = data; // بنحدث المخزن
+                    passwordTableBody.innerHTML = "";
+
+                    if (data.length === 0) {
+                        passwordTableBody.innerHTML = "<tr><td colspan='4' style='text-align:center; padding:10px;'>No saved passwords found.</td></tr>";
+                        return;
                     }
-                })
-                .catch(err => console.error("Error saving password:", err));
-        });
 
-        // جلب الباسوردات من الداتا بيز
-       function fetchSavedPasswords() {
-        fetch('/get_passwords')
-        .then(response => response.json())
-        .then(data => {
-            passwordTableBody.innerHTML = ""; // بنمسح أي بيانات قديمة (بما فيها الـ 12******** اللي ظاهرة في الصورة)
-            
-            if(data.length === 0) {
-                passwordTableBody.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:10px;'>No saved passwords found.</td></tr>";
-                return;
-            }
-
-            data.forEach((item, index) => {
-                const passId = `pass-${index}`;
-                const row = `
-                    <tr style="border-bottom: 1px solid #333;">
-                        <td style="padding:15px; text-align:center;">${item.platform}</td>
-                        <td style="padding:15px; text-align:center;">
-                            <!-- هنا بنخزن الباسورد الحقيقي في data-real وبنظهر نجوم بس -->
-                            <span id="${passId}" data-real="${item.password}" style="font-family: monospace;">********</span>
-                            <button class="show-pass-btn" onclick="togglePass('${passId}')" title="Show me">
-                                👁️
-                            </button>
-                        </td>
-                        <td style="padding:15px; text-align:center; color:lightgreen;">${item.strength}</td>
-                    </tr>
-                `;
-                passwordTableBody.innerHTML += row;
-            });
-        })
-        .catch(err => console.error("Error fetching passwords:", err));
-    }
-
-    function togglePass(id) {
-        const span = document.getElementById(id);
-        const realPass = span.getAttribute('data-real');
-        
-        // لو النص الحالي نجوم، اظهر الباسورد الحقيقي، والعكس
-        if (span.innerText === "********") {
-            span.innerText = realPass;
-            span.style.color = "#ff4d4d"; // نغير لونه عشان اليوزر يعرف إنه ظاهر
-        } else {
-            span.innerText = "********";
-            span.style.color = "white";
+                    data.forEach((item, index) => {
+                        const passId = `pass-${index}`;
+                        const row = `
+                        <tr style="border-bottom: 1px solid #333;">
+                            <td style="padding:15px; text-align:center;">${item.platform}</td>
+                            <td style="padding:15px; text-align:center;">
+                                <span id="${passId}" data-real="${item.password}" style="font-family: monospace;">********</span>
+                                <button class="show-pass-btn" onclick="togglePass('${passId}')">👁️</button>
+                            </td>
+                            <td style="padding:15px; text-align:center;">${item.strength}</td>
+                            <td style="padding:15px; text-align:center; color:#bbb; font-size:0.85rem;">
+                                ${item.date_saved}
+                            </td>
+                        </tr>
+                    `;
+                        passwordTableBody.innerHTML += row;
+                    });
+                });
         }
-    }
 
+        // جلب البيانات فور تحميل الصفحة عشان الـ Reuse Detection يشتغل فوراً
+        window.onload = fetchSavedPasswords;
 
-
-        // زرار إظهار/إخفاء قسم الباسوردات المحفوظة
         showPasswordsBtn.addEventListener("click", function () {
             if (savedPasswordsSection.style.display === "none" || savedPasswordsSection.style.display === "") {
                 fetchSavedPasswords();
@@ -527,6 +491,44 @@
             } else {
                 savedPasswordsSection.style.display = "none";
             }
+        });
+
+        function togglePass(id) {
+            const span = document.getElementById(id);
+            if (span.innerText === "********") {
+                span.innerText = span.getAttribute('data-real');
+                span.style.color = "#ff4d4d";
+            } else {
+                span.innerText = "********";
+                span.style.color = "white";
+            }
+        }
+
+        // سيف باسوورد
+        saveBtn.addEventListener("click", function () {
+            const data = {
+                platform: platformSelect.value,
+                password: passwordInput.value,
+                strength: riskLevel.innerText
+            };
+
+            fetch('/save_password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Saved Successfully!");
+                        // بنمسح الخانة بعد السيف عشان الأمان
+                        passwordInput.value = "";
+                        // بنحدث القائمة
+                        fetchSavedPasswords();
+                    } else {
+                        alert("Error saving password.");
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         });
     </script>
 </body>

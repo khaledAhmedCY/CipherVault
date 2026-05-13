@@ -1,5 +1,6 @@
 from flask import request, jsonify, session, render_template, redirect, url_for
 from cryptography.fernet import Fernet
+from datetime import datetime
 
 # --- 1. إعدادات التشفير (التي كانت في كود البايثون الخاص بك) ---
 # ملحوظة: تأكد أن المفتاح صحيح وطوله مناسب لـ Fernet
@@ -25,9 +26,10 @@ def init_manager_routes(app, db):
     class PasswordEntry(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         platform = db.Column(db.String(100), nullable=False)
-        saved_password = db.Column(db.String(500), nullable=False) # زودنا الطول لأن التشفير يطيل النص
+        saved_password = db.Column(db.String(500), nullable=False)
         strength = db.Column(db.String(50))
         user_name = db.Column(db.String(100))
+        date_saved = db.Column(db.DateTime, default=datetime.utcnow)
 
     @app.route('/manager')
     def manager_page():
@@ -50,7 +52,8 @@ def init_manager_routes(app, db):
             platform=data.get('platform'),
             saved_password=encrypted_pass, # بنخزن المشفر
             strength=data.get('strength'),
-            user_name=session['user_name']
+            user_name=session['user_name'],
+            date_saved=datetime.utcnow()
         )
         db.session.add(new_entry)
         db.session.commit()
@@ -66,16 +69,14 @@ def init_manager_routes(app, db):
         
         for e in entries:
             try:
-                # بنحاول نفك التشفير
                 real_password = decryption(e.saved_password)
             except Exception as err:
-                # لو فشل (زي اللي في الصورة) هيعرض كلمة Error بدل ما يوقف البرنامج
-                print(f"Decryption failed for {e.platform}: {err}")
                 real_password = "Error: Key Mismatch"
 
             results.append({
                 "platform": e.platform,
                 "password": real_password,
-                "strength": e.strength
+                "strength": e.strength,
+                "date_saved": e.date_saved.strftime("%Y-%m-%d") # أضفنا التاريخ هنا
             })
         return jsonify(results)
