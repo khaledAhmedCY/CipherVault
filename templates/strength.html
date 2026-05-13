@@ -11,12 +11,17 @@
 <header style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
     <h1>Password Strength</h1>
     <div class="logo-container">
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" id="topLogo" style="height: 50px; width: auto;">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" id="topLogo" style="height: 100px; width: auto;">
     </div>
 </header>
 
+
 <main>
+    <div class="back-to-mainPage">
+        <a href="{{ url_for('index') }}" class="nav-link">Home</a>
+    </div>
     <h2 class="section-title" style="color: #ff5733;">Check Strength</h2>
+    
     <p class="tip"><strong>Tip:</strong> Strong passwords contain symbols and numbers.</p>
 
     <div class="length-container">
@@ -34,6 +39,7 @@
         <button class="check-btn" id="checkBtn">CHECK STRENGTH</button>
     </div>
 </main>
+
 
 <script>
     document.getElementById('checkBtn').onclick = function() {

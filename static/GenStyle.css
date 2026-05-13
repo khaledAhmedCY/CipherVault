@@ -13,11 +13,14 @@
       min-height: 100vh;
  }
 
- header {
-      background: #ffffff;
-      padding: 22px 40px;
-      box-shadow: 0 4px 15px #f65a41;
- }
+header {
+    background: #ffffff;
+    padding: 30px 50px; /* Makes the bar taller and wider */
+    box-shadow: 0 4px 15px #f65a41;
+    display: flex;
+    justify-content: space-between; /* Pushes Title to left, Group to right */
+    align-items: center;
+}
 
  header h1 {
       font-family: 'Black Han Sans', sans-serif;
@@ -117,6 +120,41 @@
       font-weight: 700;
       color: #f65a41;
  }
+
+ /* Container for alignment if needed */
+.back-to-mainPage {
+    margin: 0; /* Remove top/bottom margin since header padding handles it */
+}
+
+/* The actual button style */
+.back-to-mainPage .nav-link {
+    display: inline-block;
+    padding: 12px 30px; /* Slightly larger button to match the bigger bar */
+    background-color: #f65a41;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase; /* Matches your "Generate" button style */
+    font-size: 0.9rem;
+}
+
+/* Hover effect to make it feel interactive */
+.back-to-mainPage .nav-link:hover {
+    background-color: #e44d36;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(246, 90, 65, 0.4);
+    color: #ffffff;
+}
+
+/* Active effect when clicked */
+.back-to-mainPage .nav-link:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
 /* =========================================
    تعديلات الـ Bar (Range Slider) الجديدة

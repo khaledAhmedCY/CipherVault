@@ -38,6 +38,36 @@ main {
     margin-bottom: 10px;
 }
 
+.back-to-mainPage {
+    margin: 0; /* Remove top/bottom margin since header padding handles it */
+}
+.back-to-mainPage .nav-link {
+    display:flex;
+    padding: 12px 30px; /* Slightly larger button to match the bigger bar */
+    background-color: #f65a41;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase; /* Matches your "Generate" button style */
+    font-size: 0.9rem;
+}
+.back-to-mainPage .nav-link:hover {
+    background-color: #e44d36;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(246, 90, 65, 0.4);
+    color: #ffffff;
+}
+
+/* Active effect when clicked */
+.back-to-mainPage .nav-link:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .tip {
     font-size: 0.9rem;
     color: #888;
